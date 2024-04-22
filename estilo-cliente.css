@@ -3,8 +3,10 @@ body {
     padding: 0;
     font-family: Arial, sans-serif;
     background-image: url(imagem\ 2.jpg);
-    position: relative; /* Permitirá que o pseudo-elemento fique sobre o fundo */
-}
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 
 .header {
     background-color: rgba(100, 0, 231, 0.7); /* Cor de fundo com transparência */

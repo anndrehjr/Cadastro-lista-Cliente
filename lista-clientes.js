@@ -1,88 +1,88 @@
-// Função para carregar e exibir a lista de clientes
+const listaClientes = document.getElementById('listaClientes');
+
 function carregarListaClientes() {
-    // Recupera os dados do localStorage
-    var registros = JSON.parse(localStorage.getItem('registros')) || [];
+  const registros = JSON.parse(localStorage.getItem('registros')) || [];
+  listaClientes.querySelector('tbody').innerHTML = '';
 
-    // Referência à lista onde os clientes serão exibidos
-    var listaClientes = document.getElementById('listaClientes');
+  registros.forEach((registro, index) => {
+    const listItem = document.createElement('tr');
 
-    // Limpa a lista antes de adicionar os novos itens
-    listaClientes.innerHTML = '';
+    listItem.innerHTML = `
+      <td>${registro.nome}</td>
+      <td>${registro.modeloCelular}</td>
+      <td>${registro.problemaPedido}</td>
+      <td>R$ ${registro.valor}</td>
+      <td>${registro.dataEntrada}</td>
+      <td>${registro.dataEntrega}</td>
+      <td>
+        <div class="progresso" style="width: ${calcularProgresso(registro.dataEntrada, registro.dataEntrega)}%; background-color: ${calcularCor(registro.dataEntrada, registro.dataEntrega)};"></div>
+      </td>
+      <td>
+        <button onclick="editarRegistro(${index})">Editar</button>
+        <button onclick="excluirRegistro(${index})">Excluir</button>
+      </td>
+    `;
 
-    // Itera sobre os registros e adiciona-os à lista
-    registros.forEach(function(registro, index) {
-        var listItem = document.createElement('li');
-        var dataAtual = new Date().toLocaleDateString();
-        listItem.innerHTML = 'Nome: ' + registro.nome + ', Modelo de Celular: ' + registro.modeloCelular + ', Problema/Pedido: ' + registro.problemaPedido + ', Valor: ' + registro.valor + ', Tempo: ' + registro.tempo + ', Data: ' + dataAtual;
-
-        // Botão de editar
-        var btnEditar = document.createElement('button');
-        btnEditar.textContent = 'Editar';
-        btnEditar.onclick = function() {
-            editarRegistro(index);
-        };
-        listItem.appendChild(btnEditar);
-
-        // Botão de excluir
-        var btnExcluir = document.createElement('button');
-        btnExcluir.textContent = 'Excluir';
-        btnExcluir.onclick = function() {
-            excluirRegistro(index);
-        };
-        listItem.appendChild(btnExcluir);
-
-        listaClientes.appendChild(listItem);
-    });
+    listaClientes.querySelector('tbody').appendChild(listItem);
+  });
 }
 
-// Função para editar um registro
-function editarRegistro(index) {
-    var registros = JSON.parse(localStorage.getItem('registros')) || [];
-    var registro = registros[index];
+function calcularProgresso(dataEntrada, dataEntrega) {
+  const entrada = new Date(dataEntrada);
+  const entrega = new Date(dataEntrega);
+  const hoje = new Date();
+  const totalDias = (entrega - entrada) / (1000 * 60 * 60 * 24);
+  const diasPassados = (hoje - entrada) / (1000 * 60 * 60 * 24);
 
-    var novoNome = prompt("Digite o novo nome:", registro.nome);
-    if (novoNome !== null) {
-        registro.nome = novoNome;
-    }
+  const progresso = (diasPassados / totalDias) * 100;
+  return Math.min(Math.max(progresso, 0), 100); // Limita o valor entre 0 e 100
+}
 
-    var novoModeloCelular = prompt("Digite o novo modelo de celular:", registro.modeloCelular);
-    if (novoModeloCelular !== null) {
-        registro.modeloCelular = novoModeloCelular;
-    }
+function calcularCor(dataEntrada, dataEntrega) {
+  const progresso = calcularProgresso(dataEntrada, dataEntrega);
+  if (progresso < 50) return '#00FF00'; // Verde
+  if (progresso < 75) return '#FFFF00'; // Amarelo
+  return '#FF0000'; // Vermelho
+}
 
-    var novoProblemaPedido = prompt("Digite o novo problema/pedido:", registro.problemaPedido);
-    if (novoProblemaPedido !== null) {
-        registro.problemaPedido = novoProblemaPedido;
-    }
+window.editarRegistro = (index) => {
+  const registros = JSON.parse(localStorage.getItem('registros')) || [];
+  const registro = registros[index];
 
-    var novoValor = prompt("Digite o novo valor:", registro.valor);
-    if (novoValor !== null) {
-        registro.valor = novoValor;
-    }
+  const novoNome = prompt("Digite o novo nome:", registro.nome);
+  if (novoNome !== null) registro.nome = novoNome;
 
-    var novoTempo = prompt("Digite o novo tempo:", registro.tempo);
-    if (novoTempo !== null) {
-        registro.tempo = novoTempo;
-    }
+  const novoModeloCelular = prompt("Digite o novo modelo de celular:", registro.modeloCelular);
+  if (novoModeloCelular !== null) registro.modeloCelular = novoModeloCelular;
 
+  const novoProblemaPedido = prompt("Digite o novo problema/pedido:", registro.problemaPedido);
+  if (novoProblemaPedido !== null) registro.problemaPedido = novoProblemaPedido;
+
+  const novoValor = prompt("Digite o novo valor:", registro.valor);
+  if (novoValor !== null) registro.valor = novoValor;
+
+  const novaDataEntrada = prompt("Digite a nova data de entrada (YYYY-MM-DD):", registro.dataEntrada);
+  if (novaDataEntrada !== null) registro.dataEntrada = novaDataEntrada;
+
+  const novoTempoGasto = prompt("Digite o novo tempo gasto (dias):", registro.tempoGasto);
+  if (novoTempoGasto !== null) {
+    registro.tempoGasto = parseInt(novoTempoGasto, 10);
+    const novaDataEntrega = new Date(novaDataEntrada);
+    novaDataEntrega.setDate(novaDataEntrega.getDate() + registro.tempoGasto);
+    registro.dataEntrega = novaDataEntrega.toISOString().split('T')[0];
+  }
+
+  localStorage.setItem('registros', JSON.stringify(registros));
+  carregarListaClientes();
+};
+
+window.excluirRegistro = (index) => {
+  if (confirm("Tem certeza que deseja excluir este registro?")) {
+    const registros = JSON.parse(localStorage.getItem('registros')) || [];
+    registros.splice(index, 1);
     localStorage.setItem('registros', JSON.stringify(registros));
-    carregarListaClientes(); // Atualiza a lista de clientes após editar
-}
-
-// Função para excluir um registro
-function excluirRegistro(index) {
-    if (confirm("Tem certeza que deseja excluir este registro?")) {
-        var registros = JSON.parse(localStorage.getItem('registros')) || [];
-        registros.splice(index, 1);
-        localStorage.setItem('registros', JSON.stringify(registros));
-        carregarListaClientes(); // Atualiza a lista de clientes após excluir
-    }
-}
-
-// Função para inicializar a página
-function inicializarPagina() {
     carregarListaClientes();
-}
+  }
+};
 
-// Chama a função para inicializar a página quando o documento estiver pronto
-document.addEventListener('DOMContentLoaded', inicializarPagina);
+carregarListaClientes();

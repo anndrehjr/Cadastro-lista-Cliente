@@ -1,10 +1,12 @@
 const listaClientes = document.getElementById('listaClientes');
 
-function carregarListaClientes() {
-  const registros = JSON.parse(localStorage.getItem('registros')) || [];
+async function carregarListaClientes() {
+  const response = await fetch('/api/registros');
+  const registros = await response.json();
+
   listaClientes.querySelector('tbody').innerHTML = '';
 
-  registros.forEach((registro, index) => {
+  registros.forEach((registro) => {
     const listItem = document.createElement('tr');
 
     listItem.innerHTML = `
@@ -18,8 +20,8 @@ function carregarListaClientes() {
         <div class="progresso" style="width: ${calcularProgresso(registro.dataEntrada, registro.dataEntrega)}%; background-color: ${calcularCor(registro.dataEntrada, registro.dataEntrega)};"></div>
       </td>
       <td>
-        <button onclick="editarRegistro(${index})">Editar</button>
-        <button onclick="excluirRegistro(${index})">Excluir</button>
+        <button onclick="editarRegistro(${registro.id})">Editar</button>
+        <button onclick="excluirRegistro(${registro.id})">Excluir</button>
       </td>
     `;
 
@@ -45,9 +47,9 @@ function calcularCor(dataEntrada, dataEntrega) {
   return '#FF0000'; // Vermelho
 }
 
-window.editarRegistro = (index) => {
-  const registros = JSON.parse(localStorage.getItem('registros')) || [];
-  const registro = registros[index];
+window.editarRegistro = async (id) => {
+  const response = await fetch(`/api/registros/${id}`);
+  const registro = await response.json();
 
   const novoNome = prompt("Digite o novo nome:", registro.nome);
   if (novoNome !== null) registro.nome = novoNome;
@@ -72,15 +74,22 @@ window.editarRegistro = (index) => {
     registro.dataEntrega = novaDataEntrega.toISOString().split('T')[0];
   }
 
-  localStorage.setItem('registros', JSON.stringify(registros));
+  await fetch(`/api/registros/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(registro),
+  });
+
   carregarListaClientes();
 };
 
-window.excluirRegistro = (index) => {
+window.excluirRegistro = async (id) => {
   if (confirm("Tem certeza que deseja excluir este registro?")) {
-    const registros = JSON.parse(localStorage.getItem('registros')) || [];
-    registros.splice(index, 1);
-    localStorage.setItem('registros', JSON.stringify(registros));
+    await fetch(`/api/registros/${id}`, {
+      method: 'DELETE',
+    });
     carregarListaClientes();
   }
 };

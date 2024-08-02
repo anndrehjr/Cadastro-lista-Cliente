@@ -7,8 +7,7 @@ document.getElementById('cadastroForm').addEventListener('submit', function(even
   const valor = document.getElementById('valor').value;
   const dataEntrada = document.getElementById('dataEntrada').value;
   const tempoGasto = parseInt(document.getElementById('tempoGasto').value, 10);
-  
-  // Calcula a data de entrega
+
   const dataEntradaObj = new Date(dataEntrada);
   const dataEntregaObj = new Date(dataEntradaObj);
   dataEntregaObj.setDate(dataEntradaObj.getDate() + tempoGasto);

@@ -9,7 +9,6 @@ body {
   background-color: #f4f4f4;
 }
 
-
 header {
   background-color: rgba(100, 0, 231, 0.7);
   color: #f1f1f1;
@@ -38,8 +37,8 @@ button:hover {
   background-color: #f4f4f4;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(100, 0, 231, 0.7);
-  margin-top: 60px; /* Ajuste para não sobrepor o header fixo */
-  flex: 1; /* Faz a div container crescer para ocupar o espaço disponível */
+  margin-top: 60px;
+  flex: 1;
 }
 
 h1 {
@@ -83,10 +82,10 @@ h1 {
 }
 
 .progresso {
-  height: 20px; /* Defina a altura desejada para a barra de progresso */
-  border-radius: 5px; /* Adicione bordas arredondadas para uma aparência mais suave */
-  width: 50%; /* Define a largura da barra de progresso */
-  background-color: green; /* Define a cor de fundo da barra de progresso */
+  height: 20px;
+  border-radius: 5px;
+  width: 50%;
+  background-color: green;
 }
 
 footer {
@@ -94,9 +93,9 @@ footer {
   padding: 10px;
   text-align: center;
   color: white;
-  position: fixed; /* Adiciona o footer fixo no rodapé */
-  bottom: 0; /* Posiciona no fundo da página */
-  width: 100%; /* Garante que o footer ocupe toda a largura da página */
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 
 footer p {
@@ -108,4 +107,3 @@ footer a img {
   margin-left: 5px;
   vertical-align: middle;
 }
-

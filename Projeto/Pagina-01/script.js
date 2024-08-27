@@ -22,5 +22,5 @@ document.getElementById('cadastroForm').addEventListener('submit', function(even
   document.getElementById('cadastroForm').reset();
 
   alert('Dados adicionados com sucesso! Você será redirecionado para a lista de clientes.');
-  window.location.href = 'lista-clientes.html';
+  window.location.href = '../Pagina-02/lista-clientes.html';
 });

@@ -4,7 +4,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "meubanco";
+$dbname = "cadastro-cliente";
 
 // Criar conexão
 $conexao = new mysqli($servername, $username, $password, $dbname);

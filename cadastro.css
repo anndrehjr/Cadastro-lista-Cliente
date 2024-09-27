@@ -1,0 +1,122 @@
+/* Resetando margens e preenchimentos */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilização do corpo */
+body {
+    font-family: 'Roboto', sans-serif; /* Usando a fonte Roboto */
+    background: linear-gradient(to bottom right, #f0f0f0, #d0d0d0); /* Gradiente suave de cinza claro */
+    color: #333; /* Texto escuro para boa legibilidade */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Altura total da tela */
+    text-align: center;
+}
+
+/* Estilização do título */
+h1 {
+    font-size: 2.5em; /* Tamanho maior */
+    margin-bottom: 20px;
+    position: relative; /* Para efeito de sombra */
+    display: inline-block; /* Para aplicar a animação */
+    color: #444; /* Cor do texto do título */
+}
+
+/* Efeito de sombra ao título */
+h1::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px; /* Distância da sombra */
+    width: 100%;
+    height: 5px; /* Altura da sombra */
+    background: #FF6766; /* Cor da sombra */
+    border-radius: 5px; /* Bordas arredondadas */
+    opacity: 0.5; /* Opacidade da sombra */
+    animation: slideIn 0.5s forwards; /* Animação de entrada */
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Estilização do formulário */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza os itens no formulário */
+    width: 80%; /* Largura do formulário */
+    max-width: 500px; /* Largura máxima do formulário */
+    margin: 0 auto; /* Centraliza o formulário horizontalmente */
+}
+
+/* Estilização dos labels */
+label {
+    margin: 10px 0 5px; /* Espaçamento entre os labels e os inputs */
+    text-align: left; /* Alinha o texto à esquerda */
+    font-weight: bold; /* Texto em negrito */
+}
+
+/* Estilização dos inputs */
+input[type="text"],
+input[type="tel"],
+input[type="date"] {
+    width: 100%; /* Largura total */
+    padding: 10px; /* Preenchimento interno */
+    margin-bottom: 15px; /* Espaçamento entre os inputs */
+    border: 1px solid #ccc; /* Borda clara */
+    border-radius: 5px; /* Bordas arredondadas */
+    font-size: 1em; /* Tamanho da fonte */
+}
+
+/* Estilização do botão de cadastrar */
+.fade-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #e0e0e0; /* Cor neutra para o fundo do botão */
+    color: #333; /* Cor do texto */
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Efeitos de hover nos botões */
+.fade-button:hover {
+    background-color: #ccc; /* Cor mais escura ao passar o mouse */
+    transform: translateY(-3px); /* Levanta o botão ao passar o mouse */
+}
+
+/* Efeito de pressionar o botão */
+.fade-button:active {
+    transform: translateY(1px); /* Efeito de pressão */
+}
+
+/* Estilização do rodapé */
+footer {
+    margin-top: auto; /* Empurra o rodapé para o fundo */
+    padding: 20px;
+    background-color: #fff; /* Fundo branco */
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid #ddd; /* Linha acima do rodapé */
+    position: relative;
+}
+
+/* Estilização do texto no rodapé */
+footer p {
+    font-size: 0.9em; /* Tamanho de fonte menor para o rodapé */
+    color: #666; /* Cor do texto do rodapé */
+}

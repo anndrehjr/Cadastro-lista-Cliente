@@ -1,33 +1,47 @@
 <?php
-// Arquivo: processar_cadastro.php
-include 'conexao.php'; // Incluindo a conexão
+// Incluir o arquivo de conexão
+include 'conexao.php';
 
-// Receber dados do formulário
-$nome = isset($_POST['nome']) ? $_POST['nome'] : '';
-$endereco = isset($_POST['endereco']) ? $_POST['endereco'] : '';
-$telefone = isset($_POST['telefone']) ? $_POST['telefone'] : '';
-$data_nascimento = isset($_POST['data_nascimento']) ? $_POST['data_nascimento'] : '';
-$documento = isset($_POST['documento']) ? $_POST['documento'] : '';
+// Inicializar variáveis de mensagem
+$mensagem = "";
+$tipo_mensagem = "";
 
-// Inserir dados no banco de dados
-$sql = "INSERT INTO clientes (nome, endereco, telefone, data_nascimento, documento) VALUES ('$nome', '$endereco', '$telefone', '$data_nascimento', '$documento')";
+// Verificar se o ID do cliente foi passado
+if (isset($_GET['id_cliente'])) {
+    // Sanitize o ID do cliente para evitar SQL Injection
+    $id_cliente = intval($_GET['id_cliente']); // Converte para inteiro
 
-if ($conexao->query($sql) === TRUE) {
-    $mensagem = "Cliente cadastrado com sucesso!";
-    $tipo_mensagem = "sucesso"; // Define o tipo de mensagem como sucesso
-} else {
-    $mensagem = "Erro: " . $conexao->error;
-    $tipo_mensagem = "erro"; // Define o tipo de mensagem como erro
+    // Preparar a instrução SQL para excluir o cliente
+    $sql = "DELETE FROM clientes WHERE id_cliente = ?";
+    
+    // Usar uma declaração preparada para evitar SQL Injection
+    $stmt = $conexao->prepare($sql);
+    $stmt->bind_param("i", $id_cliente); // 'i' indica que estamos passando um inteiro
+
+    // Executar a consulta
+    if ($stmt->execute()) {
+        // Exclusão bem-sucedida
+        $mensagem = "Cliente excluído com sucesso.";
+        $tipo_mensagem = "sucesso";
+    } else {
+        // Em caso de erro ao excluir
+        $mensagem = "Erro ao excluir cliente.";
+        $tipo_mensagem = "erro";
+    }
+
+    $stmt->close(); // Fechar a declaração
 }
 
-$conexao->close(); // Fechar conexão
+// Fechar a conexão
+$conexao->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultado do Cadastro</title>
+    <title>Resultado da Exclusão</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
@@ -72,11 +86,11 @@ $conexao->close(); // Fechar conexão
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        function showAlert() {
+        function showAlert(mensagem, tipo) {
             Swal.fire({
-                title: 'Sucesso!',
-                text: "Você foi cadastrado com sucesso!",
-                icon: 'success',
+                title: tipo === 'sucesso' ? 'Sucesso!' : 'Erro!',
+                text: mensagem,
+                icon: tipo,
                 confirmButtonText: 'OK'
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -87,7 +101,7 @@ $conexao->close(); // Fechar conexão
         }
     </script>
 </head>
-<body onload="showAlert()">
+<body onload="showAlert('<?php echo $mensagem; ?>', '<?php echo $tipo_mensagem; ?>')">
     <div class="text-center">
         <div class="mensagem <?php echo $tipo_mensagem; ?>">
             <?php echo $mensagem; ?>
@@ -98,6 +112,3 @@ $conexao->close(); // Fechar conexão
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-
-
-

@@ -4,42 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consultar Clientes</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"> <!-- SweetAlert CSS -->
+    <link rel="stylesheet" type="text/css" href="consulta.css">
 </head>
 <body>
-    <h1>Lista de Clientes</h1>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Endereço</th>
-            <th>Telefone</th>
-            <th>Data de Nascimento</th>
-            <th>Documento</th>
-        </tr>
-        <?php
-        include 'conexao.php'; // Incluindo a conexão
+    <div class="container">
+        <h1>Lista de Clientes</h1>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Endereço</th>
+                <th>Telefone</th>
+                <th>Data de Nascimento</th>
+                <th>Documento</th>
+                <th>Ações</th>
+            </tr>
+            <?php
+            include 'conexao.php'; // Incluindo a conexão
 
-        $sql = "SELECT * FROM clientes";
-        $resultado = $conexao->query($sql);
+            $sql = "SELECT * FROM clientes";
+            $resultado = $conexao->query($sql);
 
-        if ($resultado->num_rows > 0) {
-            while($row = $resultado->fetch_assoc()) {
-                echo "<tr>
-                        <td>{$row['id_cliente']}</td>
-                        <td>{$row['nome']}</td>
-                        <td>{$row['endereco']}</td>
-                        <td>{$row['telefone']}</td>
-                        <td>{$row['data_nascimento']}</td>
-                        <td>{$row['documento']}</td>
-                      </tr>";
+            if ($resultado->num_rows > 0) {
+                while($row = $resultado->fetch_assoc()) {
+                    // Formatar a data de nascimento
+                    $data_nascimento = DateTime::createFromFormat('Y-m-d', $row['data_nascimento']);
+                    $data_formatada = $data_nascimento ? $data_nascimento->format('d/m/Y') : 'Data inválida';
+
+                    echo "<tr>
+                            <td>{$row['id_cliente']}</td>
+                            <td>{$row['nome']}</td>
+                            <td>{$row['endereco']}</td>
+                            <td>{$row['telefone']}</td>
+                            <td>{$data_formatada}</td>
+                            <td>{$row['documento']}</td>
+                            <td>
+                                <button onclick='editarCliente({$row['id_cliente']})'>Editar</button>
+                                <button onclick='excluirCliente({$row['id_cliente']})'>Excluir</button>
+                            </td>
+                          </tr>";
+                }
+            } else {
+                echo "<tr><td colspan='7'>Nenhum cliente encontrado</td></tr>";
             }
-        } else {
-            echo "<tr><td colspan='6'>Nenhum cliente encontrado</td></tr>";
+
+            $conexao->close(); // Fechar conexão
+            ?>
+        </table>
+
+        <!-- Formulário de edição -->
+        <div id="form-edicao" style="display:none;">
+            <h2>Editar Cliente</h2>
+            <form id="edicao-form" method="POST" action="editar_cliente.php">
+                <input type="hidden" id="id_cliente" name="id_cliente">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" required>
+                <label for="endereco">Endereço:</label>
+                <input type="text" id="endereco" name="endereco" required>
+                <label for="telefone">Telefone:</label>
+                <input type="text" id="telefone" name="telefone" required>
+                <label for="data_nascimento">Data de Nascimento:</label>
+                <input type="date" id="data_nascimento" name="data_nascimento" required>
+                <label for="documento">Documento:</label>
+                <input type="text" id="documento" name="documento" required>
+                <button type="submit">Salvar</button>
+                <button type="button" onclick="fecharFormulario()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Sistema de Cadastro de Clientes. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script> <!-- SweetAlert JS -->
+    <script>
+        function editarCliente(id) {
+            document.getElementById('form-edicao').style.display = 'block';
+            document.getElementById('id_cliente').value = id;
+            // Preencher outros campos com os dados do cliente, se necessário
         }
 
-        $conexao->close(); // Fechar conexão
-        ?>
-    </table>
+        function excluirCliente(id) {
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "Você não poderá reverter isso!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sim, excluir!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Chamar um script PHP para excluir o cliente
+                    window.location.href = `excluir_cliente.php?id_cliente=${id}`;
+                }
+            });
+        }
+
+        function fecharFormulario() {
+            document.getElementById('form-edicao').style.display = 'none';
+        }
+    </script>
 </body>
 </html>

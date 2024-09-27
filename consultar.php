@@ -57,21 +57,7 @@
         <!-- Formulário de edição -->
         <div id="form-edicao" style="display:none;">
             <h2>Editar Cliente</h2>
-            <form id="edicao-form" method="POST" action="editar_cliente.php">
-                <input type="hidden" id="id_cliente" name="id_cliente">
-                <label for="nome">Nome:</label>
-                <input type="text" id="nome" name="nome" required>
-                <label for="endereco">Endereço:</label>
-                <input type="text" id="endereco" name="endereco" required>
-                <label for="telefone">Telefone:</label>
-                <input type="text" id="telefone" name="telefone" required>
-                <label for="data_nascimento">Data de Nascimento:</label>
-                <input type="date" id="data_nascimento" name="data_nascimento" required>
-                <label for="documento">Documento:</label>
-                <input type="text" id="documento" name="documento" required>
-                <button type="submit">Salvar</button>
-                <button type="button" onclick="fecharFormulario()">Cancelar</button>
-            </form>
+            <?php include 'formulario_cliente.php'; ?>
         </div>
     </div>
 

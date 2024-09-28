@@ -22,7 +22,7 @@
                 <th>Ações</th>
             </tr>
             <?php
-            include 'conexao.php'; // Incluindo a conexão
+            include 'conexao.php'; // ♥Incluindo a conexão
 
             $sql = "SELECT * FROM clientes";
             $resultado = $conexao->query($sql);
